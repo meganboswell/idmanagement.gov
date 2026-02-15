@@ -35,7 +35,7 @@ subnav:
   <div class="usa-alert__body">
     <h4 class="usa-alert__heading">September 2024 - Update to Microsoft Network Authentication Issue</h4>
     <p class="usa-alert__text">
-      As of September 10th 2024, Microsoft has released a solution for Active Directory network authentication issues resulting from the May 2022 patches that impacted some PIV network authentications. The September patch applies to Windows Server 2019 and later and includes a mechanism for support of some deprecated identifiers asserted by PIV authentication certificates (e.g., UPN or X509IssuerSubject altsecid) and mapped to AD user accounts.  AD administrators now have the ability to add registry keys that include what is being termed a "Triple Mapping" or "Policy Tuple" that allows the domain controller to determine if an authentication certificate is issued from a trusted Certification Authority (CA) and if it asserts an acceptable policy OID before defining acceptable identifiers for user account mapping.  You can read more about these AD changes in the following <a class="usa-link usa-link--external" href="https://techcommunity.microsoft.com/t5/public-sector-blog/enable-strong-name-based-mapping-in-government-scenarios/ba-p/4240402" target="_blank" rel="noopener noreferrer">Microsoft Public Sector Blog</a>.  Full enforcement mode for use of approved identifiers is still planned to go into effect on February 11, 2025 and compatibility mode will be fully retired on September 10th, 2025.  See Step 4 below regarding Account Linking for further details.
+      As of September 10th 2024, Microsoft has released a solution for Active Directory network authentication issues resulting from the May 2022 patches that impacted some PIV network authentications. The September feature preview applies to Windows Server 2019 and later and includes a mechanism for support of some deprecated identifiers asserted by PIV authentication certificates (e.g., UPN or X509IssuerSubject altsecid) and mapped to AD user accounts.  Once the September feature preview is installed and the servers are restarted, AD administrators will have the ability to add registry keys that include what is being termed a "Triple Mapping" or "Policy Tuple" that allows the domain controller to determine if an authentication certificate is issued from a trusted Certification Authority (CA) and if it asserts an acceptable policy OID before defining acceptable identifiers for user account mapping.  You can read more about these AD changes in the following <a class="usa-link usa-link--external" href="https://techcommunity.microsoft.com/t5/public-sector-blog/enable-strong-name-based-mapping-in-government-scenarios/ba-p/4240402" target="_blank" rel="noopener noreferrer">Microsoft Public Sector Blog</a> and you may find additional intallation and configuration instructions at the <a class="usa-link usa-link--external" href="https://community.connect.gov/pages/viewpage.action?pageId=2471068012" target="_blank" rel="noopener noreferrer">CISA Connect.gov site</a> (PIV/CAC authentication available).  Full enforcement mode for use of approved identifiers is still planned to go into effect on February 11, 2025 and compatibility mode will be fully retired on September 10th, 2025.  See Step 4 below regarding Account Linking for further details.
     </p>
   </div>
 </div>
@@ -283,12 +283,12 @@ There are six altsecid mapping options to choose from; however, three of these a
 
 | Options       | Tag     | Example | Strength | Considerations |
 | ------------- |-------------| -----|-----|
-| Issuer and Subject     | X509:\<I>\<S>  | X509:\<I>C=US,O=U.S. Government,OU=Certification Authorities,OU=Government Demonstration CA\<S>C=US,O=U.S. Government,OU=Government Agency,CN=JANE DOE OID.0.9.2342.19200300.100.1.1=47001003151020 | Supported with Policy Tuple | Implementers will need to leverage a policy tuple to accomodate this altsecid.  Note the spaces carefully when testing machine-readable formats of the certificate extensions versus the human-readable formats. |
-| Issuer and Serial Number | X509:\<I>\<SR> | X509:\<I>C=US,O=U.S. Government,OU=Certification Authorities,OU=Government Demonstration CA\<SR>46a65d49 | Supported | Serial number is stored in a reversed byte order from the human-readable version, starting at the most significant byte. |
-| Subject Key Identifier     | X509:\<SKI> |   X509:\<SKI>df2f4b04462a5aba81fec3a42e3b94beb8f2e087 | Supported | Highly unique; may be difficult to manage. |
-| SHA1 hash of public key| X509:\<SHA1-PUKEY> |  X509:\<SHA1-PUKEY>50bf88e67522ab8ce093ce51830ab0bcf8ba7824 |  Supported | Highly unique; may be difficult to manage.   |
-| Subject     | X509:\<S> | X509:\<S>C=US,O=U.S. Government,OU=Government Agency,CN=JANE DOE OID.0.9.2342.19200300.100.1.1=25001003151020 | Deprecated | This field is no longer supported for altsecid mapping as of Sept 2024. |
-| RFC822 name | X509:\<RFC822>      |   X509:\<RFC822>john.smith@hhs.gov |  Deprecated |  This field is no longer supported for altsecid mapping as of Sept 2024. |
+| Issuer and Subject     | X509:\<I>\<S>  | X509:<br/>\<I>C=US,O=U.S. Government,<br/>OU=Certification Authorities,OU=Government Demonstration CA<br/>\<S>C=US,O=U.S. Government,<br/>OU=Government Agency,<br/>CN=JANE DOE OID.0.9.2342.19200300.100.1.1=<br/>47001003151020 | Supported with Policy Tuple | Implementers will need to leverage a policy tuple to accomodate this altsecid.  Note the spaces carefully when testing machine-readable formats of the certificate extensions versus the human-readable formats. |
+| Issuer and Serial Number | X509:\<I>\<SR> | X509:<br/>\<I>C=US,O=U.S. Government,<br/>OU=Certification Authorities,<br/>OU=Government Demonstration CA<br/>\<SR>46a65d49 | Supported | Serial number is stored in a reversed byte order from the human-readable version, starting at the most significant byte. |
+| Subject Key Identifier     | X509:\<br/><SKI> |   X509:\<SKI>df2f4b04462a5aba81fec3a42e3b94beb8f2e087 | Supported | Highly unique; may be difficult to manage. |
+| SHA1 hash of public key| X509:\<SHA1-PUKEY> |  X509:<br/>\<SHA1-PUKEY>50bf88e67522ab8ce093ce51830ab0bcf8ba7824 |  Supported | Highly unique; may be difficult to manage.   |
+| Subject     | X509:\<S> | X509:<br/>\<S>C=US,O=U.S. Government,<br/>OU=Government Agency,<br/>CN=JANE DOE OID.0.9.2342.19200300.100.1.1=25001003151020 | Deprecated | This field is no longer supported for altsecid mapping as of Sept 2024. |
+| RFC822 name | X509:\<RFC822>      |   X509:<br/>\<RFC822>john.smith@hhs.gov |  Deprecated |  This field is no longer supported for altsecid mapping as of Sept 2024. |
 
 {% include alert-info.html heading = "Use of Security Identifiers (SID)" content="Although it is not mandated by FPKI PIV certificate profiles, an SID is a Microsoft priorietary identifier that can be asserted as a non-critical extention in a PIV authentication certificate and used for AD user account mapping." %} 
 
@@ -387,7 +387,7 @@ If you are designing an automated process to transition users from Principal Nam
     <p class="usa-alert__text">
       We're working with a small number of agencies to pilot a simple PowerShell script to help with some of the functional requirements above. Check out the script in our    
       <a class="usa-link usa-link--external" href="https://github.com/GSA/ficam-scripts-public/tree/master/_altSecId" target="_blank">public scripts repository</a>
-      or contact ICAM at GSA.Gov for more information.
+      or contact <a href="mailto:icam@gsa.gov">icam@gsa.gov</a> for more information.
     </p>
   </div>
 </div>
@@ -617,7 +617,7 @@ To grant a user access, based on the type of authenticator used, you can use a W
     <h4 class="usa-alert__heading">Do not uses AMA to provide privileged access</h4>
     <p class="usa-alert__text">
       Privileged users should not rely on single sign-on and should always use the highest assurance credential. Their account should be separate and distinct from their normal user account. See the 
-      <a class="usa-link" href="{{site.baseurl}}/playbooks/pam/" target="_blank" rel="noopener noreferrer"}>Privileged Identity Playbook</a>
+      <a class="usa-link" href="{{site.baseurl}}/playbooks/pam/" target="_blank" rel="noopener noreferrer">Privileged Identity Playbook</a>
       for best practices in reducing risk associated with privileged accounts and access.
     </p>
   </div>
